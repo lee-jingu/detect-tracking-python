@@ -6,13 +6,15 @@ import numpy as np
 
 from inference.interface.reader import ReaderInterface
 
+WEBCAM = 0
 
 class VideoReader(ReaderInterface):
     """
     Video Reading wrapper around Opencv-Backend
     """
+    _EXTENSIONS = {'avi', 'mkv', 'mp4', 'mov', 'wmv', 'webm', 'flv', 'mpg'}
     def __init__(self,
-                 source_name: str | int,
+                 path: str | int,
                  batch_size: int | None = None,
                  dynamic_batch: bool = False,
                  width: int | None = None,
@@ -20,7 +22,7 @@ class VideoReader(ReaderInterface):
                  **kwargs) -> None:
         """Initiate Reader object
         Args:
-            source_name (str | int): PATH or 0(for webcam)
+            path (str | int): PATH or 0(for webcam)
             batch_size (int | None): number of frames to return (as one batch) for one read.
             Defaults to None will return images individually without batch axis.
             dynamic_batch (bool): if set to True then last batch of frames may have
@@ -31,7 +33,10 @@ class VideoReader(ReaderInterface):
         # initiate props
         self._init_props()
 
-        self._name = str(source_name)
+        if not os.path.basename(path).split('.')[-1].lower() in self._EXTENSIONS:
+            raise Exception((f"Invalid file extension for {path}. Please check the filename/source-info again."))
+
+        self._name = str(path)
 
         # set batch
         self._batch_size = batch_size
@@ -59,7 +64,7 @@ class VideoReader(ReaderInterface):
         self._is_open = True
         self._info = None
         self._video_stream = None
-        self._fps = 30
+        self._fps = 10
         self._frame_count = 0
         self._seconds = 0
         self._minutes = 0

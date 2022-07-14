@@ -1,2 +1,2 @@
-from .reader import VideoReader
+from .reader import VideoReader, ImageReader, WEBCAM
 from .writer import Writer

@@ -47,15 +47,6 @@ class WriterInterface(metaclass=ABCMeta):
     
     @property
     @abstractmethod
-    def source_type(self) -> str:
-        """Type of Source
-        Returns:
-            str: type of source
-        """
-        ...
-
-    @property
-    @abstractmethod
     def frame_count(self) -> int:
         """Total frames read
         Returns:
@@ -81,14 +72,6 @@ class WriterInterface(metaclass=ABCMeta):
         """
         ...
     
-    @property
-    @abstractmethod
-    def write_type(self) -> str:
-        """Type of Writer
-        Returns:
-            str: type of writer [video, image, etc.]
-        """
-        ...
 
     @abstractmethod
     def is_open(self) -> bool:
@@ -99,18 +82,49 @@ class WriterInterface(metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def write(self, frame: np.ndarray) -> None:
+    def write_vid(self, frame: np.ndarray) -> None:
         """Write frame to output video
+        Args:
+            frame (np.ndarray): frame to write
+        """
+        ...
+    
+    @abstractmethod
+    def write_img(self, frame: np.ndarray) -> None:
+        """Write frame to output image
         Args:
             frame (np.ndarray): frame to write
         """
         ...
 
     @abstractmethod
-    def write_all(self, frames: list[np.ndarray] | ReaderInterface) -> None:
-        """Write all frames to output video
+    def draw_bbox(self, image: Image, output: tuple[list[int], str]) -> None:
+        """Draw bounding box on image
         Args:
-            frames (Union[List[np.ndarray], IReader]): Iterable object that contains frames.
+            image (Image): image to draw on
+            output (tuple[list[int], str]): bounding box and label
+        """
+        ...
+    
+    def draw_key_points(self, image: Image, key_point: dict[str, str]) -> None:
+        """Draw key points on image
+        Args:
+            image (Image): image to draw on
+            key_point (dict[str, str]): key points and labels
+        """
+        ...
+
+    def save_txt(self, output: list[str]) -> None:
+        """Save output to text file
+        Args:
+            output (list[str]): output to save
+        """
+        ...
+    
+    def save_json(self, output: list[dict]) -> None:
+        """Save output to json file
+        Args:
+            output (list[dict]): output to save
         """
         ...
 
